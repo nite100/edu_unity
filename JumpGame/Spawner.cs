@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class Player_Jump : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
-    public float jumpPower;
+    public GameObject wallPrefab; // 벽 프리팹 지정
+    public float span = 1.0f; // 스폰 시간
+    float delta = 0;
+    public float range = 0; // 높낮이 변경 범위
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,14 +19,12 @@ public class Player_Jump : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) // 점프 키 입력
+        this.delta += Time.deltaTime; // 시간 고정
+        if (this.delta > this.span)
         {
-            GetComponent<Rigidbody>().velocity = new Vector3(0, jumpPower, 0); // velocity 변경
+            this.delta = 0;
+            GameObject wall = Instantiate(wallPrefab) as GameObject; // 벽 생성
+            wall.transform.position = new Vector3(0, Random.Range(-range, range), 0); // 랜덤한 위치 스폰
         }
-    }
-
-    private void OnTriggerEnter(Collider other) // 다른 콜라이더에 닿았을 경우
-    {
-        SceneManager.LoadScene(gameObject.scene.name); // 씬 리로드
     }
 }
